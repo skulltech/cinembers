@@ -1,6 +1,8 @@
+import argparse
 import numpy as np
 import cv2 as cv
 from contextlib import contextmanager
+import matplotlib.pyplot as plt
 
 
 
@@ -8,6 +10,8 @@ class Video:
 	def __init__(self, name):
 		self.cap = cv.VideoCapture(name)
 		self.gray = False
+		self.FPS = self.cap.get(cv.CAP_PROP_FPS)
+		self.length = self.cap.get(cv.CAP_PROP_FRAME_COUNT)/self.FPS
 
 	def frames(self):
 		while True:
@@ -25,13 +29,20 @@ class Video:
 			yield first, frame
 			first = frame
 
-	def SAD(self):
+	def __SAD(self):
 		for pair in self.__pairs():
 			yield cv.absdiff(pair[0], pair[1]).sum()
 
 	def norm(self):
 		for pair in self.__pairs():
-			yield cv.norm(pair[0], pair[1], cv.L1_NORM).sum()
+			yield cv.norm(pair[0], pair[1], cv.NORM_L1)
+
+	def plot_norm(self):
+		norms = list(self.norm())
+		plt.plot(norms)
+		plt.xticks([i in range(self.length)])
+		plt.show()
+
 
 	def close(self):
 		self.cap.release()
@@ -42,3 +53,16 @@ def video(name):
 	vid = Video(name)
 	yield vid
 	vid.close()
+
+
+def main():
+	parser = argparse.ArgumentParser()
+	parser.add_argument('-v', '--video', required=True, type=str, help='Filename of video.')
+	args = parser.parse_args()
+
+	with video(args.video) as vid:
+		vid.plot_norm()
+
+
+if __name__=='__main__':
+	main()
