@@ -11,8 +11,11 @@ class Video:
         self.cap = cv.VideoCapture(name)
         self.name = name
         self.gray = False
+        self.mini = False
         self.FPS = self.cap.get(cv.CAP_PROP_FPS)
         self.length = self.cap.get(cv.CAP_PROP_FRAME_COUNT)/self.FPS
+        self.res = (self.cap.get(cv.CAP_PROP_FRAME_WIDTH), self.cap.get(cv.CAP_PROP_FRAME_HEIGHT))
+        self.__minires = (100, int(100*self.res[1]/self.res[0]))
 
     def frames(self):
         while True:
@@ -21,6 +24,8 @@ class Video:
                 break
             if self.gray:
                 frame = cv.cvtColor(frame, cv.COLOR_BGR2GRAY)
+            if self.mini:
+                frame = cv.resize(frame, self.__minires)
             yield frame
 
     def __pairs(self):
@@ -38,12 +43,28 @@ class Video:
         for pair in self.__pairs():
             yield cv.norm(pair[0], pair[1], cv.NORM_L1)
 
+    def norm_hist(self):
+        for pair in self.__pairs():
+            hists = [cv.calcHist([img], [0], None, [256], [0, 256]) for img in pair]
+            yield cv.norm(hists[0], hists[1], cv.NORM_L1)
+
     def plot_norm(self):
         norms = list(self.norm())
         plt.plot(norms)
-        plt.xlabel('Video location. In seconds.')
-        plt.ylabel('L1 Distance.')
-        plt.title('L1 Distance between consecutive frames of {}.'.format(self.name))
+        plt.xlabel('Video location in seconds.')
+        plt.ylabel('L1 distance.')
+        plt.title('L1 distance between consecutive frames of {}.'.format(self.name))
+        plt.xticks([int(i*self.FPS) for i in range(0, int(self.length), 10)], 
+                   [i for i in range(0, int(self.length), 10)])
+        plt.show()
+
+
+    def plot_hist_norm(self):
+        norms = list(self.norm_hist())
+        plt.plot(norms)
+        plt.xlabel('Video location in seconds.')
+        plt.ylabel('L1 distance.')
+        plt.title('L1 distance between consecutive frames of {}.'.format(self.name))
         plt.xticks([int(i*self.FPS) for i in range(0, int(self.length), 10)], 
                    [i for i in range(0, int(self.length), 10)])
         plt.show()
