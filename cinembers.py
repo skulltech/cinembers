@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 class Video:
 	def __init__(self, name):
 		self.cap = cv.VideoCapture(name)
+		self.name = name
 		self.gray = False
 		self.FPS = self.cap.get(cv.CAP_PROP_FPS)
 		self.length = self.cap.get(cv.CAP_PROP_FRAME_COUNT)/self.FPS
@@ -40,6 +41,9 @@ class Video:
 	def plot_norm(self):
 		norms = list(self.norm())
 		plt.plot(norms)
+		plt.xlabel('Video location. In seconds.')
+		plt.ylabel('L1 Distance.')
+		plt.title('L1 Distance between consecutive frames of {}.'.format(self.name))
 		plt.xticks([int(i*self.FPS) for i in range(0, int(self.length), 10)], 
 				   [i for i in range(0, int(self.length), 10)])
 		plt.show()
