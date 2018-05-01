@@ -40,9 +40,9 @@ class Video:
 	def plot_norm(self):
 		norms = list(self.norm())
 		plt.plot(norms)
-		plt.xticks([i in range(self.length)])
+		plt.xticks([int(i*self.FPS) for i in range(0, int(self.length), 10)], 
+				   [i for i in range(0, int(self.length), 10)])
 		plt.show()
-
 
 	def close(self):
 		self.cap.release()
