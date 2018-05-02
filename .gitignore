@@ -102,3 +102,5 @@ ENV/
 
 # Test video files
 *.mp4
+*.mkv
+*.webm

@@ -10,8 +10,8 @@ class Video:
     def __init__(self, name):
         self.cap = cv.VideoCapture(name)
         self.name = name
-        self.gray = False
-        self.mini = False
+        self.gray = True
+        self.mini = True
         self.FPS = self.cap.get(cv.CAP_PROP_FPS)
         self.length = self.cap.get(cv.CAP_PROP_FRAME_COUNT)/self.FPS
         self.res = (self.cap.get(cv.CAP_PROP_FRAME_WIDTH), self.cap.get(cv.CAP_PROP_FRAME_HEIGHT))
