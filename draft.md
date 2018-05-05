@@ -1,0 +1,1 @@
+> In filmmaking and video production, a shot is a series of frames, that runs for an uninterrupted period of time. In production, a shot is the moment that the camera starts rolling until the moment it stops. In film editing, a shot is the continuous footage or sequence between two edits or cuts.
