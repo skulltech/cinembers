@@ -88,9 +88,9 @@ class Video:
             dilated = [cv.dilate(frame, np.ones((rate, rate))) for frame in edged]
             inverted = [255 - frame for frame in dilated]
 
-            out_pixels = np.sum(edged[0] & inverted[1])
-            in_pixels = np.sum(edged[1] & inverted[0])
-            pixels = [np.sum(frame) for frame in edged]
+            out_pixels = np.sum(dilated[0] & inverted[1])
+            in_pixels = np.sum(dilated[1] & inverted[0])
+            pixels = [np.sum(frame) for frame in dilated]
             yield max(div(float(in_pixels), float(pixels[0])), div(float(out_pixels), float(pixels[1])))
 
 
